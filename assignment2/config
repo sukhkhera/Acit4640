@@ -1,0 +1,15 @@
+Host pxe
+    Hostname localhost
+    Port 12222
+    IdentityFile ~/.ssh/acit_admin_id_rsa
+    User admin
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
+
+Host todoapp
+    Hostname localhost
+    Port 12022
+    IdentityFile ~/.ssh/acit_admin_id_rsa
+    User admin
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
