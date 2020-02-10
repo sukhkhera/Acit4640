@@ -4,7 +4,7 @@ PXE_NAME="PXE_4640"
 VM_NAME="VM4640"
 
 vbmg () { VBoxManage.exe "$@"; }
-#Starting PXE
+#BUILD VBOX
 start_vbox(){
     ./vbox_setup.sh
 }
@@ -26,6 +26,7 @@ start_pxe(){
     done
 }
 
+#COPYING FILES TO THE PXE SERVER
 copy_files(){
     ssh -i acit_admin_id_rsa -p 12222 \
             -o ConnectTimeout=2 -o StrictHostKeyChecking=no \
