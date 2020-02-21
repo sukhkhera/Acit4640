@@ -1,0 +1,14 @@
+[Unit]
+Description=HI CHAT
+After=network.target
+
+[Service]
+Environment=NODE_PORT=3000
+WorkingDirectory=/home/hichat/app/public
+Type=simple
+User=hichat
+ExecStart=/usr/bin/node /home/hichat/app/server.js
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
