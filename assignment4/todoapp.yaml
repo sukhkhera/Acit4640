@@ -1,0 +1,159 @@
+---
+- hosts: all
+  vars:
+    todoapp_user: todoapp
+  tasks:
+    - name: Create User todoapp
+      become: yes
+      user:
+        name: '{{ todoapp_user }}'
+        password: 'P@ssw0rd'
+    - name: Install nginx
+      become: yes
+      package:
+        name: nginx
+        state: installed
+    - name: Install mongodb
+      become: yes
+      package:
+        name: mongodb
+        state: installed
+    - name: Install npm
+      become: yes
+      package:
+        name: npm
+        state: installed
+    - name: Install git
+      become: yes
+      package:
+        name: git
+        state: installed
+    - name: Install nodejs
+      become: yes
+      package:
+        name: nodejs
+        state: installed
+    - name: Install mongodb-server
+      become: yes
+      package:
+        name: mongodb-server
+        state: installed
+    - name: Install psmisc
+      become: yes
+      package:
+        name: psmisc
+        state: installed
+    - name: Enable mongod
+      become: yes
+      service:
+        name: mongod
+        enabled: yes
+        state: started
+    - name: Disable SELinux
+      become: yes
+      selinux:
+        state: disabled
+    - name: Get_URL mongod_acit4640
+      become: yes
+      get_url:
+        dest: /home/admin
+        url: https://acit4640.y.vu/docs/module06/resources/mongodb_ACIT4640.tgz
+        url_username: BCIT
+        url_password: w1nt3r2020
+    - name: Extract mongodb_ACIT4640.tgz
+      become: yes
+      shell:
+        cmd: tar zxf mongodb_ACIT4640.tgz
+    - name: MongoRestore acit4640
+      become: yes
+      shell:
+        cmd: mongorestore -d acit4640 /home/admin
+      environment:
+        LANG: C
+    - name: Create todoapp_user
+      become: yes
+      user:
+        name: '{{todoapp_user}}'
+        password: 'P@ssw0rd'
+    - name: Change folder permissions
+      become: yes
+      file:
+        path: '/home/{{todoapp_user}}/app'
+        state: directory
+        recurse: yes
+        owner: todoapp
+        mode: '0777'
+    - name: Change folder Permissions
+      become: yes
+      file:
+        path: '/home/{{todoapp_user}}'
+        mode: '0755'
+    - name: Git Clone into app folder
+      become: yes
+      git:
+        repo: 'https://github.com/timoguic/ACIT4640-todo-app.git'
+        dest: '/home/{{todoapp_user}}/app'
+        force: yes
+    - name: Run Npm Install
+      become: yes
+      npm:
+        path: '/home/{{todoapp_user}}/app'
+    - name: Copy Nginx File
+      become: yes
+      copy:
+        src: ./files/http/nginx.conf
+        dest: /etc/nginx/nginx.conf
+    - name: Copy database file
+      become: yes
+      copy:
+        src: ./files/http/database.js
+        dest: /home/{{todoapp_user}}/app/config/database.js
+    - name: Port http
+      become: yes
+      firewalld:
+        service: http
+        zone: public
+        immediate: yes
+        permanent: yes
+        state: enabled
+    - name: Port https
+      become: yes
+      firewalld:
+        service: https
+        zone: public
+        immediate: yes
+        permanent: yes
+        state: enabled
+    - name: Port ssh
+      become: yes
+      firewalld:
+        service: ssh
+        zone: public
+        immediate: yes
+        permanent: yes
+        state: enabled
+    - name: Copy todoapp file
+      become: yes
+      copy:
+        src: ./files/http/todoapp.service
+        dest: /etc/systemd/system/todoapp.service
+    - name: Kill all nginx
+      become: yes
+      shell:
+        cmd: killall nginx
+    - name: Enable and start Nginx
+      become: yes
+      service:
+        name: nginx
+        enabled: yes
+        state: started
+    - name: Reload daemons
+      become: yes
+      systemd:
+        daemon_reload: yes
+    - name: Enable and start todoapp
+      become: yes
+      service:
+        name: todoapp
+        enabled: yes
+        state: started
