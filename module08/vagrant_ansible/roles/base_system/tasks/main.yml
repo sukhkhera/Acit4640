@@ -1,0 +1,29 @@
+---
+- name: Disable SELinux
+  become: yes
+  selinux:
+    state: disabled
+- name: Open http port
+  become: yes
+  firewalld:
+    service: http
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+- name: Open https port
+  become: yes
+  firewalld:
+    service: https
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+- name: Ports SSH
+  become: yes
+  firewalld:
+    service: ssh
+    zone: public
+    immediate: yes
+    state: enabled
+    permanent: yes

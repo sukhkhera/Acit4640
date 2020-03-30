@@ -1,0 +1,22 @@
+---
+- name: install mongodb
+  become: yes
+  package:
+    name: mongodb
+    state: installed
+- name: install mongodb-server
+  become: yes
+  package:
+    name: mongodb-server
+    state: installed
+    
+- name: Enable MongoDB
+  become: yes
+  service:
+    name: mongod
+    enabled: yes
+    state: started
+  notify: 
+    - mongo curl
+    - mongo extract
+    - mongorestore

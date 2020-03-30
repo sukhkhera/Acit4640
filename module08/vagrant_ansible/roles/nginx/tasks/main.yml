@@ -1,0 +1,13 @@
+---
+- name: install nginx
+  become: yes
+  package:
+    name: nginx
+    state: installed
+
+- name: Provision nginx conf file
+  become: yes
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx

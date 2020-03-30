@@ -1,0 +1,4 @@
+---
+- name: display message
+  debug: 
+    msg: hello from todoapp role

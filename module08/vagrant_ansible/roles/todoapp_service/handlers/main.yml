@@ -1,0 +1,6 @@
+---
+- name: restart todoapp
+  become: yes
+  systemd: 
+    name: todoapp
+    state: restarted

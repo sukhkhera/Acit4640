@@ -1,0 +1,41 @@
+---
+- name: Create User todoapp
+  vars: 
+    todoapp_user: todoapp
+  become: yes
+  user:
+    name: '{{todoapp_user}}'
+    password: 'P@ssw0rd'
+- name: Make app directory and change permissions
+  vars: 
+    todoapp_user: todoapp
+  become: yes
+  file:
+    path: /home/{{todoapp_user}}/app
+    state: directory
+    recurse: yes
+    mode: '0777'
+    owner: '{{todoapp_user}}'
+- name: Clone Repo
+  vars: 
+    todoapp_user: todoapp
+  become: yes
+  git: 
+    repo: 'https://github.com/timoguic/ACIT4640-todo-app.git'
+    dest: '/home/{{todoapp_user}}/app'
+    force: yes
+- name: Copy Database file
+  vars: 
+    todoapp_user: todoapp
+  become: yes
+  template:
+    src: files/http/database.js
+    dest: /home/{{todoapp_user}}/app/config/database.js
+- name: provision the todoapp_service configuration file
+  vars: 
+    todoapp_port: 8080
+  become: yes
+  template: 
+    src: files/http/todoapp.service
+    dest: /etc/systemd/system
+  notify: restart todoapp

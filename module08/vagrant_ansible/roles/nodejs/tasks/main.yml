@@ -1,0 +1,11 @@
+---
+- name: Install nodejs
+  become: yes
+  package:
+    name: nodejs
+    state: installed
+- name: Install npm
+  become: yes
+  package:
+    name: npm
+    state: installed
